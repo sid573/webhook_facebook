@@ -10,7 +10,19 @@ const
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 // Handles messages events
 function handleMessage(sender_psid, received_message) {
+  let response;
 
+  // Check if the message contains text
+  if (received_message.text) {    
+
+    // Create the payload for a basic text message
+    response = {
+      "text": `You sent the message: "${received_message.text}". Now send me an image!`
+    }
+  }  
+  
+  // Sends the response message
+  callSendAPI(sender_psid, response);    
 }
 
 // Handles messaging_postbacks events
@@ -67,6 +79,14 @@ app.post('/webhook', (req, res) => {
       // Get the sender PSID
       let sender_psid = webhook_event.sender.id;
       console.log('Sender PSID: ' + sender_psid);
+
+      // Check if the event is a message or postback and
+      // pass the event to the appropriate handler function
+      if (webhook_event.message) {
+        handleMessage(sender_psid, webhook_event.message);        
+      } else if (webhook_event.postback) {
+        handlePostback(sender_psid, webhook_event.postback);
+      }
     
     });
 
