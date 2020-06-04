@@ -1,5 +1,5 @@
 'use strict';
-const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+const PAGE_ACCESS_TOKEN="EAAQl6aAWMtgBAD6PJS9OYcdJtMJIkQZA247ZCTskM4MhTX4ecmudJ74ODxnvdCOP5a8fIVCNIlZB1mwozrrPemMOHrTjASe8CmZBS2BZCSZCothCcZCqKbZCaqdLH55BfxobHJBefSCsgzrgxG1I0AXAXaMD6ZBgEx1242332OgZCjxQZDZD"
 // Imports dependencies and set up http server
 const 
   express = require('express'),
@@ -24,13 +24,33 @@ function callSendAPI(sender_psid, response) {
 }
 
 
-app.get('https://me-omics.herokuapp.com/webhook', (req, res) => {
+app.get('/webhook', (req, res) => {
 
-  const VERIFY_TOKEN = "<YOUR_VERIFY_TOKEN>";
+  const VERIFY_TOKEN = "bottechniche";
+
+  let mode = req.query['hub.mode'];
+  let token = req.query['hub.verify_token'];
+  let challenge = req.query['hub.challenge'];
+    
+  // Check if a token and mode were sent
+  if (mode && token) {
+  
+    // Check the mode and token sent are correct
+    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+      
+      // Respond with 200 OK and challenge token from the request
+      console.log('WEBHOOK_VERIFIED');
+      res.status(200).send(challenge);
+    
+    } else {
+      // Responds with '403 Forbidden' if verify tokens do not match
+      res.sendStatus(403);      
+    }
+  }
 
 })
 
-app.post('https://me-omics.herokuapp.com/webhook', (req, res) => {
+app.post('/webhook', (req, res) => {
 
   // Parse the request body from the POST
   let body = req.body;
