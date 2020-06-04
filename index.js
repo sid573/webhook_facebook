@@ -4,7 +4,8 @@ const PAGE_ACCESS_TOKEN="EAAQl6aAWMtgBAD6PJS9OYcdJtMJIkQZA247ZCTskM4MhTX4ecmudJ7
 const 
   express = require('express'),
   body_parser = require('body-parser'),
-  app = express().use(body_parser.json()); // creates express http server
+  app = express().use(body_parser.json()),// creates express http server
+  request = require('request');
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
