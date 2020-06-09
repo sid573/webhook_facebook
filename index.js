@@ -19,8 +19,29 @@ function handleMessage(sender_psid, received_message) {
   if (received_message.text) {    
     // Create the payload for a basic text message, which
     // will be added to the body of our request to the Send API
-    response = {
-      "text": `You sent the message: "${received_message.text}". Now send me an attachment!`
+    if(received_message.text == 'OPEN WEBVIEW'){
+      response = {
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"button",
+            "text":"Try the URL button!",
+            "buttons":[
+              {
+                "type":"web_url",
+                "url":"https://techniche.org/",
+                "title":"URL Button",
+                "webview_height_ratio": "full"
+              }
+            ]
+          }
+        }
+      }
+    }
+    else{
+      response = {
+        "text": `You sent the message: "${received_message.text}". Now send me an attachment!`
+      } 
     }
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
@@ -100,6 +121,12 @@ function callSendAPI(sender_psid, response) {
       console.error("Unable to send message:" + err);
     }
   });
+}
+
+// Opening a webview using a URL BUTTON
+
+function openWebview(sender_psid, ){
+
 }
 
 
