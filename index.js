@@ -221,7 +221,7 @@ app.post('/webhook', (req, res) => {
 });
 
 app.get('/order', (req,res) => {
-   body = req.body;
+   let body = req.body;
    console.log(req);
    console.log(body);
    res.sendFile('public/products.html', {root: __dirname});
