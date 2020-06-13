@@ -1,49 +1,79 @@
 'use strict';
-const PAGE_ACCESS_TOKEN = "EAAQl6aAWMtgBAD6PJS9OYcdJtMJIkQZA247ZCTskM4MhTX4ecmudJ74ODxnvdCOP5a8fIVCNIlZB1mwozrrPemMOHrTjASe8CmZBS2BZCSZCothCcZCqKbZCaqdLH55BfxobHJBefSCsgzrgxG1I0AXAXaMD6ZBgEx1242332OgZCjxQZDZD"
+// const PAGE_ACCESS_TOKEN = "EAAQl6aAWMtgBAD6PJS9OYcdJtMJIkQZA247ZCTskM4MhTX4ecmudJ74ODxnvdCOP5a8fIVCNIlZB1mwozrrPemMOHrTjASe8CmZBS2BZCSZCothCcZCqKbZCaqdLH55BfxobHJBefSCsgzrgxG1I0AXAXaMD6ZBgEx1242332OgZCjxQZDZD"
 // Imports dependencies and set up http server
 const
   express = require('express'),
   body_parser = require('body-parser'),
   app = express().use(body_parser.json()),// creates express http server
   request = require('request');
+  require('dotenv').config({path: __dirname + '/.env'})
+
+app.use(express.static('public'));
+
+const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+const SERVER_URL = process.env.SERVER_URL;
+const APP_SECRET = process.env.APP_SECRET;
 
 // Sets server port and logs message on success
-app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
+app.listen(process.env.PORT || 1337, () => console.log('webhook is listening at '+ SERVER_URL));
 
+function newOrder(sender_psid){
+  response = {
+    "attachment":{
+      "type":"template",
+      "payload":{
+        "template_type":"generic",
+        "elements":[
+           {
+            "title":"Welcome!",
+            "image_url":"https://petersfancybrownhats.com/company_image.png",
+            "subtitle":"We have the right hat for everyone.",
+            "default_action": {
+              "type": "web_url",
+              "url": SERVER_URL + "/order",
+              "webview_height_ratio": "tall",
+            },
+            "buttons":[
+              {
+                "type":"web_url",
+                "url": SERVER_URL + "/order",
+                "title":"Place New Order",
+                "webview_height_ratio": "compact",
+                "messenger_extensions": false
+              },{
+                "type":"web_url",
+                "url": SERVER_URL + "/cart",
+                "title":"View Cart",
+                "webview_height_ratio": "compact",
+                "messenger_extensions": false
+              }              
+            ]      
+          }
+        ]
+      }
+    }
+  }
+  return response;
+}
 
 // Handles messages events
 function handleMessage(sender_psid, received_message) {
   let response;
   
   // Checks if the message contains text
-  if (received_message.text) {    
-    // Create the payload for a basic text message, which
-    // will be added to the body of our request to the Send API
-    if(received_message.text == 'OPEN WEBVIEW'){
-      response = {
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"button",
-            "text":"Try the URL button!",
-            "buttons":[
-              {
-                "type":"web_url",
-                "url":"https://techniche.org/",
-                "title":"URL Button",
-                "webview_height_ratio": "full"
-              }
-            ]
-          }
+  if (received_message.text) {
+        switch (received_message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
+            case "place order":
+                response = newOrder(sender_psid);
+                break;
+            default:
+                response = {
+                    "text": `You sent the message: "${received_message.text}".`
+                };
+                break;
         }
-      }
     }
-    else{
-      response = {
-        "text": `You sent the message: "${received_message.text}". Now send me an attachment!`
-      } 
-    }
-  } else if (received_message.attachments) {
+   else if (received_message.attachments) {
     // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
     response = {
@@ -72,7 +102,11 @@ function handleMessage(sender_psid, received_message) {
       }
     }
   } 
-  
+  else {
+        response = {
+            "text": `Sorry, I don't understand what you mean.`
+        }
+    }
   // Send the response message
   callSendAPI(sender_psid, response);    
 }
@@ -122,13 +156,6 @@ function callSendAPI(sender_psid, response) {
     }
   });
 }
-
-// Opening a webview using a URL BUTTON
-
-function openWebview(sender_psid, ){
-
-}
-
 
 app.get('/webhook', (req, res) => {
 
@@ -192,3 +219,13 @@ app.post('/webhook', (req, res) => {
   }
 
 });
+
+app.get('/order', (req,res) => {
+   body = req.body;
+   console.log(req);
+   console.log(body);
+   res.sendFile('public/products.html', {root: __dirname});
+})
+app.get('/cart', (req,res) => {
+   res.sendFile('public/cart.html', {root: __dirname});
+})
