@@ -18,7 +18,7 @@ const APP_SECRET = process.env.APP_SECRET;
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening at '+ SERVER_URL));
 
 function newOrder(sender_psid){
-  response = {
+  let response = {
     "attachment":{
       "type":"template",
       "payload":{
@@ -63,7 +63,7 @@ function handleMessage(sender_psid, received_message) {
   // Checks if the message contains text
   if (received_message.text) {
         switch (received_message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
-            case "place order":
+            case "new order":
                 response = newOrder(sender_psid);
                 break;
             default:
