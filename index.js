@@ -229,3 +229,7 @@ app.get('/order', (req,res) => {
 app.get('/cart', (req,res) => {
    res.sendFile('public/cart.html', {root: __dirname});
 })
+
+app.get('/optionspostback', (req,res) => {
+  console.log(req);
+})
