@@ -231,6 +231,8 @@ app.get('/cart', (req,res) => {
 })
 
 app.get('/optionspostback', (req,res) => {
+  console.log('Hmm');
   console.log(req);
   console.log('Hoo');
+  res.status(200).send('EVENT_RECEIVED');
 })
