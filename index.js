@@ -231,8 +231,13 @@ app.get('/cart', (req,res) => {
 })
 
 app.get('/optionspostback', (req,res) => {
-  console.log('Hmm');
-  console.log(req.body);
-  console.log('Hoo');
-  res.status(200).send('EVENT_RECEIVED');
+  let body = req.query;
+  let response = {
+      "text": `Great, I will book you a ${body.bed} bed, with ${body.pillows} pillows and a ${body.view} view.`
+  };
+  res.status(200).send('Please close this window to return to the conversation thread.');
+  console.log('heyy');
+  console.log(body);
+  console.log('hii');
+  callSendAPI(body.psid, response);
 })
