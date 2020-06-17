@@ -25,20 +25,22 @@
                     },
                     function error(err) {
                         // error
-                        console.log(err);
+                        // console.log(err);
+                        console.log('no psid');
                     }
                 );
             }
         }, function error(err) {
             // error retrieving supported features
-            console.log(err);
+            //console.log(err);
+            console.log('errorrrr');
         });
         document.getElementById('submitButton').addEventListener('click', () => {
             MessengerExtensions.requestCloseBrowser(function success() {
                 console.log("Webview closing");
             }, function error(err) {
-                console.log(err);
-                console.lof('not closing');
+                //console.log(err);
+                console.log('not closing');
             });
         });
     };
