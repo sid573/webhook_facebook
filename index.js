@@ -157,6 +157,32 @@ function callSendAPI(sender_psid, response) {
   });
 }
 
+function callMessengerProfileAPI(sender_psid, response) {
+  let request_body = {
+    "recipient": {
+      "id": sender_psid
+    },
+    "message": response
+  }
+  request(
+      {
+        uri: "https://graph.facebook.com/v2.6/me/messenger_profile",
+        qs: {
+          access_token: PAGE_ACCESS_TOKEN
+        },
+        method: "POST",
+        json: request_body
+      },
+      (error, _res, body) => {
+        if (!error) {
+          console.log("Request sent:", body);
+        } else {
+          console.error("Unable to send message:", error);
+        }
+      }
+    );
+}
+
 app.get('/webhook', (req, res) => {
 
   const VERIFY_TOKEN = "bottechniche";
