@@ -39,13 +39,13 @@ function newOrder(sender_psid){
                 "url": SERVER_URL + "/order",
                 "title":"Place New Order",
                 "webview_height_ratio": "compact",
-                "messenger_extensions": false
+                "messenger_extensions": true
               },{
                 "type":"web_url",
                 "url": SERVER_URL + "/cart",
                 "title":"View Cart",
                 "webview_height_ratio": "compact",
-                "messenger_extensions": false
+                "messenger_extensions": true
               }              
             ]      
           }
