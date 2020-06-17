@@ -39,13 +39,13 @@ function newOrder(sender_psid){
                 "url": SERVER_URL + "/order",
                 "title":"Place New Order",
                 "webview_height_ratio": "compact",
-                "messenger_extensions": false
+                "messenger_extensions": true
               },{
                 "type":"web_url",
                 "url": SERVER_URL + "/cart",
                 "title":"View Cart",
                 "webview_height_ratio": "compact",
-                "messenger_extensions": false
+                "messenger_extensions": true
               }              
             ]      
           }
@@ -248,10 +248,22 @@ app.post('/webhook', (req, res) => {
 
 app.get('/order', (req,res) => {
    let body = req.body;
-   console.log(req);
+   //console.log(req);
    console.log(body);
    res.sendFile('public/products.html', {root: __dirname});
 })
 app.get('/cart', (req,res) => {
    res.sendFile('public/cart.html', {root: __dirname});
+})
+
+app.get('/optionspostback', (req,res) => {
+  let body = req.query;
+  let response = {
+      "text": `Great, I will book you a ${body.bed} bed, with ${body.pillows} pillows and a ${body.view} view.`
+  };
+  res.status(200).send('Please close this window to return to the conversation thread.');
+  console.log('heyy');
+  console.log(body);
+  console.log('hii');
+  callSendAPI(body.psid, response);
 })
