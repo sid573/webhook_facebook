@@ -9,6 +9,7 @@ const
   require('dotenv').config({path: __dirname + '/.env'})
 
 app.use(express.static('public'));
+app.set("view engine", "ejs");
 
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 const SERVER_URL = process.env.SERVER_URL;
@@ -250,10 +251,12 @@ app.get('/order', (req,res) => {
    let body = req.body;
    //console.log(req);
    console.log(body);
-   res.sendFile('public/products.html', {root: __dirname});
+   res.render("products");
+   //res.sendFile('public/products.html', {root: __dirname});
 })
 app.get('/cart', (req,res) => {
-   res.sendFile('public/cart.html', {root: __dirname});
+    res.render("cart");
+    //res.sendFile('public/cart.html', {root: __dirname});
 })
 
 app.get('/optionspostback', (req,res) => {
