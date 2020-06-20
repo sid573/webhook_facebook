@@ -1,5 +1,11 @@
 .prod-sub-btn{
     width:100vw;
     background-color: aqua;
-    height:20px;
+    height:10vh;
+}
+
+.container{
+    width:100vw;
+    height:auto;
+    background-color:red;
 }
