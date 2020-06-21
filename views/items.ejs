@@ -1,0 +1,9 @@
+<ul class="repos">
+    <% items.forEach(function(item) { %>
+        <input type="checkbox" name="bed" value="<%=item.name%>" id="<%=item.name%>"><%=item.name%><br>
+    <li class="repo">
+        <h2><a href="<%=repo.url%>" class="repo-title"><%=repo.name%></a></h2>
+        <p class="repo-description"><%=repo.description%></p>
+    </li>
+    <% })%>
+</ul>

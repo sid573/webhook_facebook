@@ -43,7 +43,7 @@ function newOrder(sender_psid) {
                 "messenger_extensions": true
               }, {
                 "type": "web_url",
-                "url": SERVER_URL + "/cart",
+                "url": SERVER_URL + "/cart/" + sender_psid,
                 "title": "View Cart",
                 "webview_height_ratio": "compact",
                 "messenger_extensions": true
@@ -256,11 +256,12 @@ app.get('/order/:id', (req, res) => {
   let loading = {
     "text": `Loading....`
   };
-  callSendAPI(psid, loading);
+  //callSendAPI(psid, loading);
   res.render("products");
   //res.sendFile('public/products.html', {root: __dirname});
 })
-app.get('/cart', (req, res) => {
+app.get('/cart/:id', (req, res) => {
+  let psid = req.params.id;
   res.render("cart");
   //res.sendFile('public/cart.html', {root: __dirname});
 })
@@ -284,5 +285,16 @@ app.get('/myapp', (req, res) => {
   let response = {
     "text": `heyyyy`
   };
+  // const result = await axios.get(
+  //   `https://api.github.com/users/${username}/repos`
+  // );
+  // const repos = result.data.map((repo) => ({
+  //   name: repo.name,
+  //   url: repo.html_url,
+  //   description: repo.description,
+  // }));
+  // res.render("products", {
+  //   repos
+  // });
   callSendAPI(body.ps_id, response);
 })
