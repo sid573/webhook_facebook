@@ -249,8 +249,17 @@ app.post('/webhook', (req, res) => {
 
 app.get('/order', (req,res) => {
    let body = req.body;
+   let quer=req.query;
    //console.log(req);
+   console.log('1');
    console.log(body);
+   console.log('2');
+   console.log(quer);
+   console.log('3');
+  //  let loading = {
+  //   "text": `Loading....`
+  //   };
+  //   callSendAPI(body.psid,loading);
    res.render("products");
    //res.sendFile('public/products.html', {root: __dirname});
 })
@@ -268,8 +277,6 @@ app.get('/optionspostback', (req,res) => {
   console.log('heyy');
   console.log(body);
   console.log('hii');
-  console.log(req.body);
-  console.log('yayy');
   callSendAPI(body.psid, response);
 })
 
