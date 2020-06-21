@@ -272,3 +272,13 @@ app.get('/optionspostback', (req,res) => {
   console.log('yayy');
   callSendAPI(body.psid, response);
 })
+
+app.get('/myapp',(req,res)=>{
+  let body=req.body;
+  console.log(body);
+  res.status(200);
+  let response = {
+    "text": `heyyyy`
+  };
+  callSendAPI(body.ps_id,response);
+})
