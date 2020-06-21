@@ -6,7 +6,7 @@ const
   body_parser = require('body-parser'),
   app = express().use(body_parser.json()),// creates express http server
   request = require('request');
-  require('dotenv').config({path: __dirname + '/.env'})
+require('dotenv').config({ path: __dirname + '/.env' })
 
 app.use(express.static('public'));
 app.set("view engine", "ejs");
@@ -16,39 +16,39 @@ const SERVER_URL = process.env.SERVER_URL;
 const APP_SECRET = process.env.APP_SECRET;
 
 // Sets server port and logs message on success
-app.listen(process.env.PORT || 1337, () => console.log('webhook is listening at '+ SERVER_URL));
+app.listen(process.env.PORT || 1337, () => console.log('webhook is listening at ' + SERVER_URL));
 
-function newOrder(sender_psid){
+function newOrder(sender_psid) {
   let response = {
-    "attachment":{
-      "type":"template",
-      "payload":{
-        "template_type":"generic",
-        "elements":[
-           {
-            "title":"Welcome!",
-            "image_url":"https://petersfancybrownhats.com/company_image.png",
-            "subtitle":"We have the right hat for everyone.",
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "generic",
+        "elements": [
+          {
+            "title": "Welcome!",
+            "image_url": "https://petersfancybrownhats.com/company_image.png",
+            "subtitle": "We have the right hat for everyone.",
             "default_action": {
               "type": "web_url",
               "url": SERVER_URL + "/order",
               "webview_height_ratio": "tall",
             },
-            "buttons":[
+            "buttons": [
               {
-                "type":"web_url",
-                "url": SERVER_URL + "/order/"+sender_psid,
-                "title":"Place New Order",
+                "type": "web_url",
+                "url": SERVER_URL + "/order/" + sender_psid,
+                "title": "Place New Order",
                 "webview_height_ratio": "compact",
                 "messenger_extensions": true
-              },{
-                "type":"web_url",
+              }, {
+                "type": "web_url",
                 "url": SERVER_URL + "/cart",
-                "title":"View Cart",
+                "title": "View Cart",
                 "webview_height_ratio": "compact",
                 "messenger_extensions": true
-              }              
-            ]      
+              }
+            ]
           }
         ]
       }
@@ -60,21 +60,21 @@ function newOrder(sender_psid){
 // Handles messages events
 function handleMessage(sender_psid, received_message) {
   let response;
-  
+
   // Checks if the message contains text
   if (received_message.text) {
-        switch (received_message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
-            case "new order":
-                response = newOrder(sender_psid);
-                break;
-            default:
-                response = {
-                    "text": `You sent the message: "${received_message.text}".`
-                };
-                break;
-        }
+    switch (received_message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
+      case "new order":
+        response = newOrder(sender_psid);
+        break;
+      default:
+        response = {
+          "text": `You sent the message: "${received_message.text}".`
+        };
+        break;
     }
-   else if (received_message.attachments) {
+  }
+  else if (received_message.attachments) {
     // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
     response = {
@@ -102,14 +102,14 @@ function handleMessage(sender_psid, received_message) {
         }
       }
     }
-  } 
+  }
   else {
-        response = {
-            "text": `Sorry, I don't understand what you mean.`
-        }
+    response = {
+      "text": `Sorry, I don't understand what you mean.`
     }
+  }
   // Send the response message
-  callSendAPI(sender_psid, response);    
+  callSendAPI(sender_psid, response);
 }
 
 
@@ -117,7 +117,7 @@ function handleMessage(sender_psid, received_message) {
 // Handles messaging_postbacks events
 function handlePostback(sender_psid, received_postback) {
   let response;
-  
+
   // Get the payload for the postback
   let payload = received_postback.payload;
 
@@ -166,22 +166,22 @@ function callMessengerProfileAPI(sender_psid, response) {
     "message": response
   }
   request(
-      {
-        uri: "https://graph.facebook.com/v2.6/me/messenger_profile",
-        qs: {
-          access_token: PAGE_ACCESS_TOKEN
-        },
-        method: "POST",
-        json: request_body
+    {
+      uri: "https://graph.facebook.com/v2.6/me/messenger_profile",
+      qs: {
+        access_token: PAGE_ACCESS_TOKEN
       },
-      (error, _res, body) => {
-        if (!error) {
-          console.log("Request sent:", body);
-        } else {
-          console.error("Unable to send message:", error);
-        }
+      method: "POST",
+      json: request_body
+    },
+    (error, _res, body) => {
+      if (!error) {
+        console.log("Request sent:", body);
+      } else {
+        console.error("Unable to send message:", error);
       }
-    );
+    }
+  );
 }
 
 app.get('/webhook', (req, res) => {
@@ -247,33 +247,28 @@ app.post('/webhook', (req, res) => {
 
 });
 
-app.get('/order/:id', (req,res) => {
-   let body = req.body;
-   let quer=req.query;
-   let psid=req.params.id;
-   //console.log(req);
-   console.log('1');
-   console.log(body);
-   console.log('2');
-   console.log(quer);
-   console.log('3');
-   console.log(psid);
-  //  let loading = {
-  //   "text": `Loading....`
-  //   };
-  //   callSendAPI(body.psid,loading);
-   res.render("products");
-   //res.sendFile('public/products.html', {root: __dirname});
+app.get('/order/:id', (req, res) => {
+  let psid = req.params.id;
+  //console.log(req);
+  console.log('1');
+  console.log(psid);
+  console.log('3');
+  let loading = {
+    "text": `Loading....`
+  };
+  callSendAPI(psid, loading);
+  res.render("products");
+  //res.sendFile('public/products.html', {root: __dirname});
 })
-app.get('/cart', (req,res) => {
-    res.render("cart");
-    //res.sendFile('public/cart.html', {root: __dirname});
+app.get('/cart', (req, res) => {
+  res.render("cart");
+  //res.sendFile('public/cart.html', {root: __dirname});
 })
 
-app.get('/optionspostback', (req,res) => {
+app.get('/optionspostback', (req, res) => {
   let body = req.query;
   let response = {
-      "text": `Great, I will book you a ${body.bed} bed, with ${body.pillows} pillows and a ${body.view} view.`
+    "text": `Great, I will book you a ${body.bed} bed, with ${body.pillows} pillows and a ${body.view} view.`
   };
   res.status(200).send('Please close this window to return to the conversation thread.');
   console.log('heyy');
@@ -282,12 +277,12 @@ app.get('/optionspostback', (req,res) => {
   callSendAPI(body.psid, response);
 })
 
-app.get('/myapp',(req,res)=>{
-  let body=req.body;
+app.get('/myapp', (req, res) => {
+  let body = req.body;
   console.log(body);
   res.status(200);
   let response = {
     "text": `heyyyy`
   };
-  callSendAPI(body.ps_id,response);
+  callSendAPI(body.ps_id, response);
 })
