@@ -37,7 +37,7 @@ function newOrder(sender_psid){
             "buttons":[
               {
                 "type":"web_url",
-                "url": SERVER_URL + "/order",
+                "url": SERVER_URL + "/order/"+sender_psid,
                 "title":"Place New Order",
                 "webview_height_ratio": "compact",
                 "messenger_extensions": true
@@ -247,15 +247,17 @@ app.post('/webhook', (req, res) => {
 
 });
 
-app.get('/order', (req,res) => {
+app.get('/order/:id', (req,res) => {
    let body = req.body;
    let quer=req.query;
+   let psid=req.params.id;
    //console.log(req);
    console.log('1');
    console.log(body);
    console.log('2');
    console.log(quer);
    console.log('3');
+   console.log(psid);
   //  let loading = {
   //   "text": `Loading....`
   //   };
