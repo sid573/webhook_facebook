@@ -298,3 +298,14 @@ app.get('/myapp', (req, res) => {
   // });
   callSendAPI(body.ps_id, response);
 })
+
+app.get('/myapp/timeslot', (req, res) => {
+  let body = req.body;
+  console.log(body);
+  res.status(200);
+  let response = {
+    "text": `We have time slot`
+  };
+  
+  callSendAPI(body.ps_id, response);
+})
